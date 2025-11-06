@@ -47,13 +47,13 @@ body{
   box-shadow:0 6px 16px rgba(10,132,255,.35);
 }
 .hero h1{
-  margin:0;font-size:18px;font-weight:800;letter-spacing:-.2px;
+  margin:0 0 0 5px;font-size:18px;font-weight:800;letter-spacing:-.2px;
 }
 
 /* ===== 工具栏（修复留白版） ===== */
 .toolbar{
   position:sticky;
-  top:env(safe-area-inset-top,0);
+  top:10px;
   z-index:10;
   display:flex;
   align-items:center;
@@ -90,7 +90,8 @@ body{
 
 /* 分段控件与刷新按钮贴合布局 */
 .toolbar .seg{
-  flex:1 1 auto;
+  flex:unset;
+  margin-top:5px;
   display:flex;
   background:#fff;
   border:1px solid var(--line);
@@ -114,6 +115,7 @@ body{
 }
 .toolbar .pill{
   flex:0 0 auto;
+  margin-top:5px;
   background:#fff;
   border:1px solid var(--line);
   border-radius:999px;
