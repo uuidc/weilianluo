@@ -1,1 +1,39 @@
-test
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>URL 参数显示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .param {
+      margin: 5px 0;
+    }
+    span {
+      color: #0078d7;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>URL 参数信息</h2>
+  <div class="param">云客客户ID (ykId)：<span id="ykId"></span></div>
+  <div class="param">当前用户ID (ykUserId)：<span id="ykUserId"></span></div>
+  <div class="param">客户微信号 (wechatId)：<span id="wechatId"></span></div>
+  <div class="param">当前用户微信号 (userWechatId)：<span id="userWechatId"></span></div>
+
+  <script>
+    // 获取 URL 参数对象
+    const params = new URLSearchParams(window.location.search);
+
+    // 将参数值显示到页面
+    document.getElementById('ykId').textContent = params.get('ykId') || '无';
+    document.getElementById('ykUserId').textContent = params.get('ykUserId') || '无';
+    document.getElementById('wechatId').textContent = params.get('wechatId') || '无';
+    document.getElementById('userWechatId').textContent = params.get('userWechatId') || '无';
+  </script>
+</body>
+</html>
