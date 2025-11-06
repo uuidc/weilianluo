@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>URL 参数 & 订单 Demo（移动端）</title>
+  <title>URL 参数 & 订单 Demo</title>
   <style>
     :root{
       --bg:#f6f7f9;
@@ -25,22 +25,11 @@
       font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
     }
     .page{
-      max-width:520px; /* 适配移动端，窄屏阅读 */
+      max-width:520px;
       margin:0 auto;
       padding:16px 12px 48px;
     }
 
-    /* 顶部区域 */
-    .header{
-      display:flex;align-items:center;gap:10px;margin:6px 2px 14px;
-    }
-    .header .app{
-      width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#a78bfa,#60a5fa);
-      box-shadow:0 6px 16px rgba(99,102,241,.25);
-    }
-    .header h1{margin:0;font-size:18px;font-weight:700}
-
-    /* URL 参数卡片 */
     .card{
       background:var(--card);
       border-radius:var(--radius);
@@ -48,12 +37,10 @@
       padding:14px;
       margin:12px 0;
     }
-    .kv{display:grid;grid-template-columns:110px 1fr;row-gap:8px;column-gap:6px}
+    .kv{display:grid;grid-template-columns:120px 1fr;row-gap:8px;column-gap:6px}
     .kv .k{color:var(--muted)}
     .kv .v{font-weight:600;color:var(--text)}
     .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:12px}
-
-    /* 间隔符 */
     .section-divider{
       position:relative;text-align:center;margin:18px 0 10px;color:var(--muted);
     }
@@ -66,7 +53,7 @@
       font-size:12px;
     }
 
-    /* 订单卡片（移动端） */
+    /* 订单卡片 */
     .order{
       background:var(--card);
       border-radius:20px;
@@ -74,57 +61,27 @@
       margin:12px 0;
       box-shadow:0 8px 26px rgba(31,35,40,.06);
     }
-    .order-hd{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;
-    }
+    .order-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
     .order-no{font-weight:700}
     .status{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
     .status.wait{background:#fff7ed;color:var(--warning)}
     .status.ship{background:#ecfeff;color:#0891b2}
     .status.done{background:#ecfdf5;color:var(--success)}
     .status.cancel{background:#fef2f2;color:var(--danger)}
-
-    .buyer{
-      display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin-bottom:8px;
-    }
+    .buyer{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin-bottom:8px;}
     .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#fca5a5,#fde68a);display:flex;align-items:center;justify-content:center;font-weight:700}
     .shop{font-size:12px;color:var(--muted)}
     .items{display:flex;flex-direction:column;gap:10px;margin:6px 0}
     .item{display:flex;gap:10px}
-    .thumb{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#e2e8f0,#fff);border:1px solid #eef2f7;flex:0 0 auto}
+    .thumb{width:60px;height:60px;border-radius:12px;object-fit:cover;flex:0 0 auto;}
     .itxt{flex:1}
     .ititle{font-weight:600;font-size:14px;margin-bottom:2px}
     .isky{font-size:12px;color:var(--muted)}
     .iprice{font-size:13px;font-weight:700;margin-top:4px}
-    .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px}
-    .addr{color:var(--muted);font-size:12px}
-    .meta{display:flex;gap:10px;color:var(--muted);font-size:12px;margin-top:8px;flex-wrap:wrap}
-    .actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
-    .btn{
-      border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:6px 10px;font-size:13px;
-    }
-    .btn.primary{background:#111827;color:#fff;border-color:#111827}
-
-    /* 顶部筛选/统计（简化移动样式） */
-    .toolbar{display:flex;justify-content:space-between;align-items:center;margin:6px 2px}
-    .toolbar .pill{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid #e5e7eb;font-size:13px}
-    .toolbar .right{display:flex;gap:8px}
-
-    /* 小屏优化 */
-    @media (max-width:360px){
-      .kv{grid-template-columns:96px 1fr}
-    }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="header">
-      <div class="app"></div>
-      <div>
-        <h1>小红书 · 订单管理（移动端 Demo）</h1>
-        <div class="tag">静态页 / 随机数据</div>
-      </div>
-    </div>
 
     <!-- URL 参数 -->
     <div class="card">
@@ -132,38 +89,30 @@
         <strong>URL 参数信息</strong>
         <span class="tag" id="paramFrom">?query</span>
       </div>
-      <div class="kv">
-        <div class="k">云客客户ID (ykId)</div><div class="v" id="ykId">无</div>
-        <div class="k">当前用户ID (ykUserId)</div><div class="v" id="ykUserId">无</div>
-        <div class="k">客户微信号 (wechatId)</div><div class="v" id="wechatId">无</div>
-        <div class="k">当前用户微信号 (userWechatId)</div><div class="v" id="userWechatId">无</div>
+      <div class="kv" id="paramList">
+        <div class="k">暂无参数</div><div class="v">-</div>
       </div>
     </div>
 
     <!-- 间隔符 -->
     <div class="section-divider"><span>订单信息 Demo</span></div>
 
-    <!-- 简化工具栏（移动端） -->
-    <div class="toolbar">
-      <div class="pill" id="orderTotal">共 0 个订单</div>
-      <div class="right">
-        <button class="pill" id="regen">换一批</button>
-      </div>
-    </div>
-
-    <!-- 订单列表 -->
     <div id="orderList"></div>
   </div>
 
   <script>
-    /* ---------- URL 参数显示 ---------- */
-    const search = window.location.search;
-    document.getElementById('paramFrom').textContent = search ? '已拼接参数' : '无参数';
-    const p = new URLSearchParams(search);
-    document.getElementById('ykId').textContent = p.get('ykId') || '无';
-    document.getElementById('ykUserId').textContent = p.get('ykUserId') || '无';
-    document.getElementById('wechatId').textContent = p.get('wechatId') || '无';
-    document.getElementById('userWechatId').textContent = p.get('userWechatId') || '无';
+    /* ---------- 动态显示所有 URL 参数 ---------- */
+    const params = new URLSearchParams(window.location.search);
+    const paramList = document.getElementById('paramList');
+    const entries = Array.from(params.entries());
+    document.getElementById('paramFrom').textContent = entries.length ? '已拼接参数' : '无参数';
+
+    if(entries.length){
+      paramList.innerHTML = entries.map(([k,v]) => `
+        <div class="k">${k}</div>
+        <div class="v">${v || '(空)'}</div>
+      `).join('');
+    }
 
     /* ---------- 随机订单数据 ---------- */
     const STATUS = [
@@ -172,109 +121,53 @@
       {k:'已完成', cls:'done'},
       {k:'已取消', cls:'cancel'}
     ];
-    const SHOPS = ['Glee的乐','小熊馆','夏日衣橱','格调家居','云上集市','潮趣玩物'];
     const ITEMS = [
-      'ToriSee【春夏新款】衬衫',
-      '法式小香风连衣裙',
-      '北欧风玻璃花瓶',
-      '便携式咖啡套组',
-      '加绒运动卫衣',
-      '极简通勤手提包',
-      '真丝发带礼盒',
-      '木纹香薰加湿器'
+      {title:'春夏新款衬衫', img:'https://picsum.photos/seed/shirt/200'},
+      {title:'法式连衣裙', img:'https://picsum.photos/seed/dress/200'},
+      {title:'北欧玻璃花瓶', img:'https://picsum.photos/seed/vase/200'},
+      {title:'便携咖啡杯', img:'https://picsum.photos/seed/cup/200'},
+      {title:'加绒卫衣', img:'https://picsum.photos/seed/hoodie/200'},
+      {title:'通勤手提包', img:'https://picsum.photos/seed/bag/200'},
+      {title:'真丝发带', img:'https://picsum.photos/seed/band/200'},
+      {title:'香薰加湿器', img:'https://picsum.photos/seed/humidifier/200'}
     ];
-    const SKUS = ['米白·S','米白·M','黑色·均码','薄荷绿·L','雾蓝·26码','枫叶棕·标准','奶茶色·42'];
-    const SURNAME = '赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻';
-    const PROV = ['北京','上海','广东','浙江','江苏','四川','重庆','湖北','福建','山东'];
-    const CITY = ['朝阳区','浦东新区','天河区','西湖区','雨花台区','武侯区','南岸区','江岸区','鼓楼区','历下区'];
-
-    const r = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
-    const pick = arr => arr[r(0, arr.length-1)];
-    const phoneMask = () => ['1', r(3,9), r(0,9), r(0,9)].join('') + '****' + r(1000,9999);
-    const idShort = () => 'PT' + Date.now().toString().slice(-6) + r(10,99);
-
-    function randItem(){
-      const title = pick(ITEMS);
-      const sku = pick(SKUS);
-      const price = r(49,399);
-      const qty = r(1,3);
-      return {title, sku, price, qty, amount: price*qty};
-    }
-
-    function randOrder(){
-      const items = Array.from({length:r(1,3)}, randItem);
-      const total = items.reduce((s,i)=>s+i.amount,0);
+    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+    const randOrder = i => {
+      const item = pick(ITEMS);
       return {
-        no: idShort(),
-        buyer: SURNAME[r(0,SURNAME.length-1)]+'**',
-        avatar: String.fromCodePoint(0x1F427 + r(0,6)), // 随机动物emoji
-        shop: pick(SHOPS),
+        no: 'PT' + Date.now().toString().slice(-6) + i,
         status: pick(STATUS),
-        items,
-        total,
-        consignee: SURNAME[r(0,SURNAME.length-1)]+'*',
-        phone: phoneMask(),
-        address: `${pick(PROV)} · ${pick(CITY)} · ${r(1,20)}号`,
-        createdAt: new Date(Date.now()-r(1,7)*86400000).toLocaleString(),
-        payAt: new Date(Date.now()-r(0,7)*86400000).toLocaleString()
+        buyer: ['赵','钱','孙','李','周','吴','郑','王'][Math.floor(Math.random()*8)] + '**',
+        item: item.title,
+        img: item.img,
+        price: (Math.random()*300+50).toFixed(2)
       };
-    }
+    };
 
-    function renderOrder(o){
-      const el = document.createElement('div');
-      el.className = 'order';
-      el.innerHTML = `
+    const orderList = document.getElementById('orderList');
+    const orders = Array.from({length:5}, (_,i)=>randOrder(i));
+    orderList.innerHTML = orders.map(o=>`
+      <div class="order">
         <div class="order-hd">
           <div class="order-no">订单号：${o.no}</div>
           <div class="status ${o.status.cls}">${o.status.k}</div>
         </div>
         <div class="buyer">
-          <div class="avatar">${o.avatar}</div>
-          <div>${o.buyer} <span class="shop">· ${o.shop}</span></div>
+          <div class="avatar">👤</div>
+          <div>${o.buyer}</div>
         </div>
         <div class="items">
-          ${o.items.map(it=>`
-            <div class="item">
-              <div class="thumb"></div>
-              <div class="itxt">
-                <div class="ititle">${it.title}</div>
-                <div class="isky">${it.sku} · x${it.qty}</div>
-                <div class="iprice">￥${it.amount.toFixed(2)}</div>
-              </div>
+          <div class="item">
+            <img class="thumb" src="${o.img}" alt="${o.item}">
+            <div class="itxt">
+              <div class="ititle">${o.item}</div>
+              <div class="isky">x1</div>
+              <div class="iprice">￥${o.price}</div>
             </div>
-          `).join('')}
-        </div>
-        <div class="row">
-          <div class="addr">收货：${o.consignee}（${o.phone}）<br/>地址：${o.address}</div>
-          <div style="text-align:right">
-            <div>实付：<b style="font-size:16px">￥${o.total.toFixed(2)}</b></div>
-            <div class="shop">含运费：￥0.00</div>
           </div>
         </div>
-        <div class="meta">
-          <div>下单时间：${o.createdAt}</div>
-          <div>支付时间：${o.payAt}</div>
-        </div>
-        <div class="actions">
-          <button class="btn">删除</button>
-          <button class="btn">客服</button>
-          <button class="btn primary">详情</button>
-        </div>
-      `;
-      return el;
-    }
-
-    function loadOrders(n=8){
-      const list = document.getElementById('orderList');
-      list.innerHTML = '';
-      const data = Array.from({length:n}, randOrder);
-      data.forEach(o => list.appendChild(renderOrder(o)));
-      document.getElementById('orderTotal').textContent = `共 ${n} 个订单`;
-    }
-
-    loadOrders();
-
-    document.getElementById('regen').addEventListener('click', ()=>loadOrders(r(5,10)));
+      </div>
+    `).join('');
   </script>
 </body>
 </html>
