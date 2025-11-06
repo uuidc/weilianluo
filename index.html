@@ -3,171 +3,359 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>URL 参数 & 订单 Demo</title>
+  <title>ERP · Overview</title>
   <style>
     :root{
-      --bg:#f6f7f9;
+      --bg:#f5f5f7;        /* Apple 风格灰 */
       --card:#ffffff;
-      --text:#1f2328;
-      --muted:#6b7280;
-      --primary:#2563eb;
-      --success:#16a34a;
-      --warning:#f59e0b;
-      --danger:#ef4444;
-      --soft:#eef2ff;
-      --radius:16px;
+      --line:#e5e5ea;      /* 细分割线 */
+      --text:#111111;
+      --muted:#6e6e73;     /* 二级文字 */
+      --tint:#0071e3;      /* Apple 蓝 */
+      --success:#34c759;
+      --warn:#ff9f0a;
+      --danger:#ff3b30;
+      --shadow:0 6px 24px rgba(0,0,0,.06);
+      --radius:18px;
+      --radius-lg:22px;
     }
     *{box-sizing:border-box}
+    html,body{background:var(--bg);color:var(--text)}
     body{
       margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+      font:14px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    .page{
-      max-width:520px;
-      margin:0 auto;
-      padding:16px 12px 48px;
-    }
+    .page{max-width:520px;margin:0 auto;padding:18px 12px 48px}
 
+    /* 顶部工具栏（苹果式，干净） */
+    .toolbar{
+      display:flex;align-items:center;gap:8px;justify-content:space-between;margin:4px 2px 14px;
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      background:#fff;border:1px solid var(--line);border-radius:999px;
+      padding:8px 12px;font-size:13px;box-shadow:var(--shadow);
+    }
+    .seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:999px;overflow:hidden;box-shadow:var(--shadow)}
+    .seg button{
+      border:0;background:transparent;padding:8px 12px;font-size:13px;color:var(--muted)
+    }
+    .seg button.active{background:#000;color:#fff}
+    .search{
+      flex:1;display:flex;align-items:center;background:#fff;border:1px solid var(--line);
+      border-radius:999px;padding:8px 12px;gap:8px;box-shadow:var(--shadow)
+    }
+    .search input{
+      border:0;outline:0;background:transparent;width:100%;font-size:14px
+    }
+    .icon{font-style:normal;opacity:.6}
+
+    /* 卡片基础 */
     .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:0 6px 24px rgba(31,35,40,.06);
-      padding:14px;
-      margin:12px 0;
+      background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:14px;margin:12px 0;border:1px solid var(--line)
     }
-    .kv{display:grid;grid-template-columns:120px 1fr;row-gap:8px;column-gap:6px}
-    .kv .k{color:var(--muted)}
-    .kv .v{font-weight:600;color:var(--text)}
-    .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:12px}
-    .section-divider{
-      position:relative;text-align:center;margin:18px 0 10px;color:var(--muted);
+    .section-title{
+      display:flex;align-items:center;justify-content:space-between;margin:2px 2px 10px;
+      font-weight:700;font-size:15px;
     }
-    .section-divider:before{
-      content:"";display:block;height:1px;background:rgba(0,0,0,.06);
-      position:absolute;left:0;right:0;top:50%;
-    }
-    .section-divider span{
-      position:relative;background:var(--bg);padding:4px 10px;border-radius:12px;border:1px solid rgba(0,0,0,.06);
-      font-size:12px;
-    }
+    .subtle{color:var(--muted);font-weight:500;font-size:12px}
 
-    /* 订单卡片 */
-    .order{
-      background:var(--card);
-      border-radius:20px;
-      padding:12px;
-      margin:12px 0;
-      box-shadow:0 8px 26px rgba(31,35,40,.06);
+    /* URL 参数列表（自动遍历） */
+    .kv{display:grid;grid-template-columns:120px 1fr;row-gap:8px;column-gap:8px}
+    .kv .k{color:var(--muted)}
+    .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef5ff;color:#0a84ff;font-size:12px}
+
+    /* KPI 概览（苹果式大数字） */
+    .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .kpi{
+      background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)
     }
-    .order-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
-    .order-no{font-weight:700}
-    .status{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
-    .status.wait{background:#fff7ed;color:var(--warning)}
-    .status.ship{background:#ecfeff;color:#0891b2}
-    .status.done{background:#ecfdf5;color:var(--success)}
-    .status.cancel{background:#fef2f2;color:var(--danger)}
-    .buyer{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin-bottom:8px;}
-    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#fca5a5,#fde68a);display:flex;align-items:center;justify-content:center;font-weight:700}
-    .shop{font-size:12px;color:var(--muted)}
-    .items{display:flex;flex-direction:column;gap:10px;margin:6px 0}
-    .item{display:flex;gap:10px}
-    .thumb{width:60px;height:60px;border-radius:12px;object-fit:cover;flex:0 0 auto;}
-    .itxt{flex:1}
-    .ititle{font-weight:600;font-size:14px;margin-bottom:2px}
-    .isky{font-size:12px;color:var(--muted)}
-    .iprice{font-size:13px;font-weight:700;margin-top:4px}
+    .kpi .n{font-size:22px;font-weight:800;letter-spacing:-0.3px}
+    .kpi .t{color:var(--muted);font-size:12px;margin-top:4px}
+    .kpi .trend{font-size:12px;margin-top:6px}
+    .up{color:var(--success)} .down{color:var(--danger)}
+
+    /* 列表行（通用样式） */
+    .list{display:flex;flex-direction:column}
+    .row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+    .row:last-child{border-bottom:0}
+    .thumb{
+      width:56px;height:56px;border-radius:14px;object-fit:cover;flex:0 0 auto;border:1px solid var(--line);background:#fafafa
+    }
+    .col{flex:1;min-width:0}
+    .title{font-weight:700}
+    .meta{color:var(--muted);font-size:12px;margin-top:2px}
+    .right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:92px}
+    .amt{font-weight:800}
+    .status{font-size:12px;border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+    .s-wait{background:#fff7ec;color:var(--warn)}
+    .s-done{background:#ecfff5;color:var(--success)}
+    .s-ship{background:#ecf7ff;color:#0a84ff}
+    .s-cancel{background:#fff1f0;color:var(--danger)}
+
+    /* 进度条（库存） */
+    .bar{height:8px;background:#f2f2f7;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .bar>i{display:block;height:100%;background:linear-gradient(90deg,#0a84ff,#64d2ff)}
+
+    /* 底部安全边距 */
+    .safe{height:24px}
+    @media (max-width:360px){ .kv{grid-template-columns:105px 1fr} }
   </style>
 </head>
 <body>
   <div class="page">
+    <!-- 顶部工具栏 -->
+    <div class="toolbar">
+      <div class="search">
+        <span class="icon">🔍</span>
+        <input id="kw" placeholder="搜索单号、SKU、客户…" />
+      </div>
+      <div class="seg" id="range">
+        <button data-k="d" class="active">今天</button>
+        <button data-k="w">本周</button>
+        <button data-k="m">本月</button>
+      </div>
+      <button id="reload" class="pill">刷新数据</button>
+    </div>
 
     <!-- URL 参数 -->
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
-        <strong>URL 参数信息</strong>
-        <span class="tag" id="paramFrom">?query</span>
+      <div class="section-title">
+        <span>URL 参数</span>
+        <span class="tag" id="paramFrom">无参数</span>
       </div>
       <div class="kv" id="paramList">
-        <div class="k">暂无参数</div><div class="v">-</div>
+        <div class="k">暂无</div><div class="v">-</div>
       </div>
     </div>
 
-    <!-- 间隔符 -->
-    <div class="section-divider"><span>订单信息 Demo</span></div>
+    <!-- 概览 KPI -->
+    <div class="card">
+      <div class="section-title">
+        <span>概览</span>
+        <span class="subtle" id="summaryRange">今天</span>
+      </div>
+      <div class="kpis" id="kpis"></div>
+    </div>
 
-    <div id="orderList"></div>
+    <!-- 销售（含图片） -->
+    <div class="card">
+      <div class="section-title"><span>销售</span><span class="subtle" id="salesCount"></span></div>
+      <div class="list" id="salesList"></div>
+    </div>
+
+    <!-- 采购 -->
+    <div class="card">
+      <div class="section-title"><span>采购</span><span class="subtle" id="poCount"></span></div>
+      <div class="list" id="poList"></div>
+    </div>
+
+    <!-- 库存 -->
+    <div class="card">
+      <div class="section-title"><span>库存</span><span class="subtle" id="invCount"></span></div>
+      <div class="list" id="invList"></div>
+    </div>
+
+    <!-- 客户 -->
+    <div class="card">
+      <div class="section-title"><span>客户</span><span class="subtle" id="custCount"></span></div>
+      <div class="list" id="custList"></div>
+    </div>
+
+    <div class="safe"></div>
   </div>
 
   <script>
-    /* ---------- 动态显示所有 URL 参数 ---------- */
-    const params = new URLSearchParams(window.location.search);
+    /* ========== URL 参数（自动遍历） ========== */
+    const params = new URLSearchParams(location.search);
+    const paramEntries = Array.from(params.entries());
+    document.getElementById('paramFrom').textContent = paramEntries.length ? '已拼接参数' : '无参数';
     const paramList = document.getElementById('paramList');
-    const entries = Array.from(params.entries());
-    document.getElementById('paramFrom').textContent = entries.length ? '已拼接参数' : '无参数';
+    if (paramEntries.length){
+      paramList.innerHTML = paramEntries.map(([k,v]) =>
+        `<div class="k">${k}</div><div class="v">${v || '(空)'}</div>`
+      ).join('');
+    }
 
-    if(entries.length){
-      paramList.innerHTML = entries.map(([k,v]) => `
-        <div class="k">${k}</div>
-        <div class="v">${v || '(空)'}</div>
+    /* ========== 随机数据生成（ERP 模块） ========== */
+    const r     = (min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+    const pick  = arr=>arr[r(0,arr.length-1)];
+    const money = n=>'￥'+Number(n).toFixed(2);
+
+    // 占位商品图（苹果风清爽图）：使用 picsum + 稳定种子
+    const THUMBS = ['dress','bag','chair','watch','lamp','shoe','cup','plant','glass','coat']
+      .map(k => (seed)=>`https://picsum.photos/seed/${k}-${seed}/200`);
+
+    const STATUS = [
+      {t:'待发货', cls:'s-wait'},
+      {t:'已发货', cls:'s-ship'},
+      {t:'已完成', cls:'s-done'},
+      {t:'已取消', cls:'s-cancel'},
+    ];
+    const SUPPLIERS = ['和风供销','晨曦工贸','远航智造','沐光服饰','辰曜家居','研行数码'];
+    const SKUS = ['A12-米白-S','B09-曜黑-M','C33-雾蓝-L','D21-岩灰-均码','E88-浅卡其-26','F17-星空蓝-标准'];
+    const CUSTOMERS = ['赵*','钱*','孙*','李*','周*','吴*','郑*','王*','冯*','陈*'];
+
+    const makeSales = (n=6) => Array.from({length:n}, (_,i)=> {
+      const qty = r(1,3), price = r(69,399);
+      const status = pick(STATUS);
+      const thumb = pick(THUMBS)(Date.now()+i);
+      return {
+        no: 'SO'+(Date.now().toString().slice(-6))+i,
+        sku: pick(SKUS),
+        title: ['法式连衣裙','通勤手提包','北欧台灯','简约马克杯','运动休闲鞋','极简外套'][r(0,5)],
+        thumb, qty, price, amount: qty*price, status
+      };
+    });
+
+    const makePO = (n=4)=> Array.from({length:n}, (_,i)=>({
+      no:'PO'+(Date.now().toString().slice(-6))+i,
+      supplier: pick(SUPPLIERS),
+      lines: r(1,5),
+      amount: r(500,8000),
+      eta: r(2,10)+' 天后'
+    }));
+
+    const makeInv = (n=6)=> Array.from({length:n}, (_,i)=> {
+      const capacity = r(200,1200), stock = r(20,capacity);
+      return {
+        sku: pick(SKUS),
+        name: ['基础T恤','针织开衫','轻薄羽绒','便携咖啡杯','日式花瓶','北欧靠枕'][r(0,5)],
+        stock, capacity, pct: Math.round(stock/capacity*100)
+      };
+    });
+
+    const makeCust = (n=5)=> Array.from({length:n}, (_,i)=>({
+      name: pick(CUSTOMERS),
+      orders: r(1,12),
+      gmv: r(200,12000),
+      last: r(1,15)+' 天前'
+    }));
+
+    /* ========== 渲染 ========== */
+    const $ = sel => document.querySelector(sel);
+    const setText = (sel, txt)=>{ const el = $(sel); if(el) el.textContent = txt; };
+
+    function renderKPIs(sales, po, inv, cust){
+      const totals = {
+        gmv: sales.reduce((s,x)=>s+x.amount,0),
+        ord: sales.length,
+        sku: inv.length,
+        wait: sales.filter(s=>s.status.t==='待发货').length
+      };
+      const kpiTpl = (n,t,trend='+'+r(1,9)+'%') =>
+        `<div class="kpi"><div class="n">${n}</div><div class="t">${t}</div>
+         <div class="trend ${Math.random()>0.5?'up':'down'}">${trend}</div></div>`;
+      $('#kpis').innerHTML = [
+        kpiTpl(money(totals.gmv),'GMV'),
+        kpiTpl(totals.ord,'订单量'),
+        kpiTpl(totals.sku,'库存SKU'),
+        kpiTpl(totals.wait,'待发货')
+      ].join('');
+    }
+
+    function renderSales(list){
+      setText('#salesCount', `共 ${list.length} 条`);
+      $('#salesList').innerHTML = list.map(s => `
+        <div class="row">
+          <img class="thumb" src="${s.thumb}" alt="${s.title}">
+          <div class="col">
+            <div class="title">${s.title}</div>
+            <div class="meta">单号 ${s.no} · SKU ${s.sku} · x${s.qty}</div>
+          </div>
+          <div class="right">
+            <div class="amt">${money(s.amount)}</div>
+            <div class="status ${s.status.cls}">${s.status.t}</div>
+          </div>
+        </div>
       `).join('');
     }
 
-    /* ---------- 随机订单数据 ---------- */
-    const STATUS = [
-      {k:'待发货', cls:'wait'},
-      {k:'已发货', cls:'ship'},
-      {k:'已完成', cls:'done'},
-      {k:'已取消', cls:'cancel'}
-    ];
-    const ITEMS = [
-      {title:'春夏新款衬衫', img:'https://picsum.photos/seed/shirt/200'},
-      {title:'法式连衣裙', img:'https://picsum.photos/seed/dress/200'},
-      {title:'北欧玻璃花瓶', img:'https://picsum.photos/seed/vase/200'},
-      {title:'便携咖啡杯', img:'https://picsum.photos/seed/cup/200'},
-      {title:'加绒卫衣', img:'https://picsum.photos/seed/hoodie/200'},
-      {title:'通勤手提包', img:'https://picsum.photos/seed/bag/200'},
-      {title:'真丝发带', img:'https://picsum.photos/seed/band/200'},
-      {title:'香薰加湿器', img:'https://picsum.photos/seed/humidifier/200'}
-    ];
-    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
-    const randOrder = i => {
-      const item = pick(ITEMS);
-      return {
-        no: 'PT' + Date.now().toString().slice(-6) + i,
-        status: pick(STATUS),
-        buyer: ['赵','钱','孙','李','周','吴','郑','王'][Math.floor(Math.random()*8)] + '**',
-        item: item.title,
-        img: item.img,
-        price: (Math.random()*300+50).toFixed(2)
-      };
-    };
-
-    const orderList = document.getElementById('orderList');
-    const orders = Array.from({length:5}, (_,i)=>randOrder(i));
-    orderList.innerHTML = orders.map(o=>`
-      <div class="order">
-        <div class="order-hd">
-          <div class="order-no">订单号：${o.no}</div>
-          <div class="status ${o.status.cls}">${o.status.k}</div>
-        </div>
-        <div class="buyer">
-          <div class="avatar">👤</div>
-          <div>${o.buyer}</div>
-        </div>
-        <div class="items">
-          <div class="item">
-            <img class="thumb" src="${o.img}" alt="${o.item}">
-            <div class="itxt">
-              <div class="ititle">${o.item}</div>
-              <div class="isky">x1</div>
-              <div class="iprice">￥${o.price}</div>
-            </div>
+    function renderPO(list){
+      setText('#poCount', `共 ${list.length} 条`);
+      $('#poList').innerHTML = list.map(p => `
+        <div class="row">
+          <div class="col">
+            <div class="title">${p.supplier}</div>
+            <div class="meta">采购单 ${p.no} · 明细 ${p.lines} 行 · 交期 ${p.eta}</div>
+          </div>
+          <div class="right">
+            <div class="amt">${money(p.amount)}</div>
+            <div class="status">待到货</div>
           </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
+
+    function renderInv(list){
+      setText('#invCount', `共 ${list.length} 条`);
+      $('#invList').innerHTML = list.map(i => `
+        <div class="row">
+          <div class="col">
+            <div class="title">${i.name} <span class="subtle">· ${i.sku}</span></div>
+            <div class="meta">库存 ${i.stock}/${i.capacity}</div>
+            <div class="bar"><i style="width:${i.pct}%"></i></div>
+          </div>
+          <div class="right">
+            <div class="status ${i.pct<20?'s-cancel': i.pct<50?'s-wait':'s-done'}">${i.pct}%</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCust(list){
+      setText('#custCount', `共 ${list.length} 位`);
+      $('#custList').innerHTML = list.map(c => `
+        <div class="row">
+          <div class="col">
+            <div class="title">${c.name}</div>
+            <div class="meta">订单 ${c.orders} · 近一次 ${c.last}</div>
+          </div>
+          <div class="right">
+            <div class="amt">${money(c.gmv)}</div>
+            <div class="status">累计GMV</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ========== 数据驱动 ========== */
+    let sales=[], po=[], inv=[], cust=[];
+    function regen(){
+      sales = makeSales(r(5,8));
+      po    = makePO(r(3,5));
+      inv   = makeInv(r(5,8));
+      cust  = makeCust(r(4,6));
+      renderKPIs(sales,po,inv,cust);
+      renderSales(sales);
+      renderPO(po);
+      renderInv(inv);
+      renderCust(cust);
+    }
+    regen();
+
+    /* ========== 交互：时间段、搜索、刷新 ========== */
+    document.getElementById('range').addEventListener('click', (e)=>{
+      if(e.target.tagName!=='BUTTON') return;
+      [...e.currentTarget.children].forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      const map={d:'今天',w:'本周',m:'本月'};
+      document.getElementById('summaryRange').textContent = map[e.target.dataset.k] || '今天';
+      regen(); // 简化处理：切换时间段即刷新随机数据
+    });
+
+    document.getElementById('reload').addEventListener('click', regen);
+
+    document.getElementById('kw').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      const filter = (arr, get)=>arr.filter(x=>get(x).toLowerCase().includes(q));
+      renderSales(q? filter(sales, x=>`${x.no} ${x.sku} ${x.title}`) : sales);
+      renderPO(q? filter(po,    x=>`${x.no} ${x.supplier}`) : po);
+      renderInv(q? filter(inv,  x=>`${x.sku} ${x.name}`) : inv);
+      renderCust(q? filter(cust, x=>`${x.name}`) : cust);
+    });
   </script>
 </body>
 </html>
